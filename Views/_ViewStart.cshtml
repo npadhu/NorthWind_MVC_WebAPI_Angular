@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<environment names="Development">
+    <!-- Css -->
+    <link rel="stylesheet" asp-href-include="~/css/*.css">
+    <!-- Js -->
+    <script src="~/wwwapp/lib/jQuery/dist/jquery.js"></script>
+
+    <script src="~/wwwapp/node_modules/systemjs/dist/system.js"></script>
+    <script src="~/wwwapp/node_modules/core-js/client/shim.js"></script>
+    <script src="~/wwwapp/node_modules/zone.js/zone.js"></script>
+    <script src="~/wwwapp/node_modules/reflect-metadata/reflect.js"></script>
+</environment>*@
+
+@{ var angular = "@angular"; }
+
+<environment names="Staging,Production">
+    <!-- Css -->
+    <link rel="stylesheet" type="text/css" href="~/wwwapp/css/site.min.css" />
+
+    <link href="~/wwwapp/node_modules/@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet">
+
+    @*<link rel="stylesheet" asp-href-include="~/wwwapp/css/site.min.css" asp-append-version="true">*@
+    <!-- Js -->
+    <script src="~/wwwapp/lib/jQuery/dist/jquery.min.js"></script>
+
+    <script src="~/wwwapp/node_modules/systemjs/dist/system.js"></script>
+    <script src="~/wwwapp/node_modules/core-js/client/shim.min.js"></script>
+    <script src="~/wwwapp/node_modules/zone.js/zone.min.js"></script>
+    <script src="~/wwwapp/node_modules/reflect-metadata/reflect.js"></script>
+</environment>
+
+<!-- Configure SystemJS -->
+<script src="~/Scripts/systemjs.config.js"></script>
+<script>
+      System.import('app').catch(function(err){ console.error(err); });
+</script>
