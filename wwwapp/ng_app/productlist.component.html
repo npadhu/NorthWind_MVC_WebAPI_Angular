@@ -1,0 +1,153 @@
+﻿<div class="wrapper">
+    <div *ngIf="showSpinner" style="padding:5px; font-weight:bold">
+        <div class="sk-circle">
+            <div class="sk-circle1 sk-child"></div>
+            <div class="sk-circle2 sk-child"></div>
+            <div class="sk-circle3 sk-child"></div>
+            <div class="sk-circle4 sk-child"></div>
+            <div class="sk-circle5 sk-child"></div>
+            <div class="sk-circle6 sk-child"></div>
+            <div class="sk-circle7 sk-child"></div>
+            <div class="sk-circle8 sk-child"></div>
+            <div class="sk-circle9 sk-child"></div>
+            <div class="sk-circle10 sk-child"></div>
+            <div class="sk-circle11 sk-child"></div>
+            <div class="sk-circle12 sk-child"></div>
+        </div>
+    </div>
+
+
+    <button type="button" (click)="newProduct()" class="btn btn-primary">Add New</button>
+
+
+				<md-table #table [dataSource]="_prdsSource">
+								<!-- Position Column -->
+								<ng-container cdkColumnDef="ID">
+												<md-header-cell *cdkHeaderCellDef> ID </md-header-cell>
+												<md-cell *cdkCellDef="let product">
+																<a href="#" (click)="showDetails(product.ID)">{{product.ID}}</a>
+												</md-cell>
+								</ng-container>
+
+								<!-- Name Column -->
+								<ng-container cdkColumnDef="name">
+												<md-header-cell *cdkHeaderCellDef> Name </md-header-cell>
+												<md-cell *cdkCellDef="let product"> {{product.Name}} </md-cell>
+								</ng-container>
+
+								<!-- category Column -->
+								<ng-container cdkColumnDef="category">
+												<md-header-cell *cdkHeaderCellDef> Category </md-header-cell>
+												<md-cell *cdkCellDef="let product"> {{product.Category}} </md-cell>
+								</ng-container>
+
+								<!-- supplier Column -->
+								<ng-container cdkColumnDef="supplier">
+												<md-header-cell *cdkHeaderCellDef> Supplier </md-header-cell>
+												<md-cell *cdkCellDef="let product"> {{product.Supplier}} </md-cell>
+								</ng-container>
+
+								<md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+								<md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+				</md-table>
+				<md-paginator #ProductsPg
+																		[length]="_products.length"
+																		[pageSize]="10"
+																		[pageSizeOptions]="[5, 10, 25, 100]" (page)="onPagination($event)">
+				</md-paginator>
+
+</div>
+
+
+<modal id="custom-modal-1" (OnModalInit)="setModalRef($event)" >
+    <div class="modal">
+        <div class="modal-body">
+            <div *ngIf="modalInitializing" style="padding:5px; font-weight:bold">
+                <div class="sk-circle">
+                    <div class="sk-circle1 sk-child"></div>
+                    <div class="sk-circle2 sk-child"></div>
+                    <div class="sk-circle3 sk-child"></div>
+                    <div class="sk-circle4 sk-child"></div>
+                    <div class="sk-circle5 sk-child"></div>
+                    <div class="sk-circle6 sk-child"></div>
+                    <div class="sk-circle7 sk-child"></div>
+                    <div class="sk-circle8 sk-child"></div>
+                    <div class="sk-circle9 sk-child"></div>
+                    <div class="sk-circle10 sk-child"></div>
+                    <div class="sk-circle11 sk-child"></div>
+                    <div class="sk-circle12 sk-child"></div>
+                </div>
+            </div>
+            <div *ngIf="!modalInitializing && detailProduct">
+                <form>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Product ID" [value]="modal.detailObject.ProductID" name="ProductID" required [disabled]="true">
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Product Name" [(ngModel)]="modal.detailObject.ProductName" name="ProductName" required [errorStateMatcher]="pNameErrorState">
+                            <md-error>This field is required</md-error>
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-input-container>
+                            <input mdInput placeholder="Supplier" [mdAutocomplete]="supplier" [formControl]="supplierCtrl" [(ngModel)]="selectedSupplier" (ngModelChange)="setSupplier($event)">
+                        </md-input-container>
+                        <md-autocomplete #supplier="mdAutocomplete" [displayWith]="supplierName">
+                            <md-option *ngFor="let sup of filteredSupplier | async" [value]="sup">
+                                {{sup.CompanyName}}
+                            </md-option>
+                        </md-autocomplete>
+                    </div>
+                    <div>
+                        <md-input-container>
+                            <input mdInput placeholder="Category" [mdAutocomplete]="category" [formControl]="categoryCtrl" [(ngModel)]="selectedCategory" (ngModelChange)="setCategory($event)">
+                        </md-input-container>
+                        <md-autocomplete #category="mdAutocomplete" [displayWith]="categoryName">
+                            <md-option *ngFor="let cat of filteredCategory | async" [value]="cat">
+                                <img style="vertical-align:middle;" src="data:image/bmp;base64,{{cat.Picture.substr(104)}}" height="25" />
+                                <span>{{cat.CategoryName}}</span>
+                            </md-option>
+                        </md-autocomplete>
+                    </div>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Qty per unit" [(ngModel)]="modal.detailObject.QuantityPerUnit" name="QuantityPerUnit">
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Unit Price"  [type]="number" [(ngModel)]="modal.detailObject.UnitPrice" name="UnitPrice">
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Units in Stock"  [type]="number" [(ngModel)]="modal.detailObject.UnitsInStock" name="UnitsInStock">
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Units in Order"  [type]="number" [(ngModel)]="modal.detailObject.UnitsOnOrder" name="UnitsOnOrder">
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-form-field>
+                            <input mdInput placeholder="Reorder Level" [type]="number" [(ngModel)]="modal.detailObject.ReorderLevel" name="ReorderLevel">
+                        </md-form-field>
+                    </div>
+                    <div>
+                        <md-checkbox>Discontinued</md-checkbox>
+                    </div>
+              </form>
+            </div>
+       </div>
+        <div class="modal-footer">
+            <button type="button" (click)="SaveChanges($event)" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
+
